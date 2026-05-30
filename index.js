@@ -5,19 +5,32 @@ import fs from 'node:fs/promises';
 
 const server = http.createServer(async (req, res) => {
   const parsedURL = new URL(req.url, 'http://localhost:8080');
-  
-  if (parsedURL.pathname === '/') {
-    try {
+  try {
+    if (parsedURL.pathname === '/') {
       const htmlIndexData = await fs.readFile('./index.html', 'utf-8');
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(htmlIndexData);
-    } catch (err) {
-      res.writeHead(500, { 'Content-Type': 'text/plain' });
-      res.end('Internal Server Error: Missing index.html');
+
+    } else if (parsedURL.pathname === '/about') {
+      const htmlAboutData = await fs.readFile('./about.html', 'utf-8');
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(htmlAboutData);
+    
+    } else if (parsedURL.pathname === '/contact-me') {
+      const htmlContactData = await fs.readFile('./contact-me.html', 'utf-8');
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(htmlContactData);
+
+    } else {
+      const html404Data = await fs.readFile('./404.html', 'utf8');
+      res.writeHead(404, { 'Content-Type': 'text/html' });
+      res.end(html404Data);
     }
-  } else {
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('404 Not Found');
+  } catch (err) {
+    console.error('Server Error:', err);
+
+    res.writeHead(500, { 'Content-Type': 'text/plain' });
+    res.end('Internal Server Error: A file is missing or corrupted.');
   }
 });
 
