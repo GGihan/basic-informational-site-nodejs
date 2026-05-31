@@ -1,39 +1,36 @@
 #!/usr/bin/env node
 
-import http from 'node:http';
-import fs from 'node:fs/promises';
+import express from "express";
+import path from 'node:path';
 
-const server = http.createServer(async (req, res) => {
-  const parsedURL = new URL(req.url, 'http://localhost:8080');
-  try {
-    if (parsedURL.pathname === '/') {
-      const htmlIndexData = await fs.readFile('./index.html', 'utf-8');
-      res.writeHead(200, { 'Content-Type': 'text/html' });
-      res.end(htmlIndexData);
+const app = express();
+const PORT = process.env.PORT || 8080;
 
-    } else if (parsedURL.pathname === '/about') {
-      const htmlAboutData = await fs.readFile('./about.html', 'utf-8');
-      res.writeHead(200, { 'Content-Type': 'text/html' });
-      res.end(htmlAboutData);
-    
-    } else if (parsedURL.pathname === '/contact-me') {
-      const htmlContactData = await fs.readFile('./contact-me.html', 'utf-8');
-      res.writeHead(200, { 'Content-Type': 'text/html' });
-      res.end(htmlContactData);
-
-    } else {
-      const html404Data = await fs.readFile('./404.html', 'utf8');
-      res.writeHead(404, { 'Content-Type': 'text/html' });
-      res.end(html404Data);
-    }
-  } catch (err) {
-    console.error('Server Error:', err);
-
-    res.writeHead(500, { 'Content-Type': 'text/plain' });
-    res.end('Internal Server Error: A file is missing or corrupted.');
-  }
+app.get('/', (req, res) => {
+  res.sendFile(path.resolve('index.html'));
 });
 
-server.listen(8080, () => {
-  console.log('Server is running at http://localhost:8080/');
+app.get('/about', (req, res) => {
+  res.sendFile(path.resolve('about.html'));
+});
+
+app.get('/contact-me', (req, res) => {
+  res.sendFile(path.resolve('contact-me.html'));
+});
+
+app.get('*path', (req, res) => {
+  res.status(404).sendFile(path.resolve('404.html'));
+});
+
+app.use((err, req, res, next) => {
+  console.error('Server Error:', err.stack);
+
+  res.status(500).send('Internal Server Error: A file is missing or corrupted.');
+});
+
+app.listen(PORT, (error) => {
+  if (error) {
+    throw error;
+  }
+  console.log(`Server is running at http://localhost:${PORT}/`);
 });
