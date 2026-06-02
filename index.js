@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import express from "express";
+import path from 'node:path';
 import authorRouter from "./routes/authorRouter.js";
 import bookRouter from "./routes/bookRouter.js";
 import indexRouter from "./routes/indexRouter.js";
@@ -18,7 +19,7 @@ app.get('*path', (req, res) => {
 app.use((err, req, res, next) => {
   console.error('Server Error:', err.stack);
 
-  res.status(500).send('Internal Server Error: A file is missing or corrupted.');
+  res.status(err.statusCode || 500).send(err.message);
 });
 
 const PORT = process.env.PORT || 8080;
