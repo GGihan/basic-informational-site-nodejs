@@ -2,11 +2,17 @@
 
 import express from "express";
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import authorRouter from "./routes/authorRouter.js";
 import bookRouter from "./routes/bookRouter.js";
 import indexRouter from "./routes/indexRouter.js";
 
 const app = express();
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const viewsDirectory = path.resolve(__dirname, 'views');
+
+app.set('views', viewsDirectory);
+app.set('view engine', 'ejs');
 
 app.use('/authors', authorRouter);
 app.use('/books', bookRouter);

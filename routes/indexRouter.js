@@ -4,7 +4,7 @@ import path from 'node:path';
 const indexRouter = Router();
 
 indexRouter.get('/', (req, res) => {
-  res.sendFile(path.resolve('index.html'));
+  res.render('index', { message: 'EJS rocks!' });
 });
 
 indexRouter.get('/about', (req, res) => {
