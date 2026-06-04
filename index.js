@@ -9,10 +9,13 @@ import indexRouter from "./routes/indexRouter.js";
 
 const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const viewsDirectory = path.resolve(__dirname, 'views');
+const viewsDirectory = path.join(__dirname, 'views');
+const assetsPath = path.join(__dirname, 'public');
 
 app.set('views', viewsDirectory);
 app.set('view engine', 'ejs');
+
+app.use(express.static(assetsPath));
 
 app.use('/authors', authorRouter);
 app.use('/books', bookRouter);
