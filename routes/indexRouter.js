@@ -5,7 +5,7 @@ const indexRouter = Router();
 
 const links = [
   { href: '/', text: 'Home' },
-  { href: 'about', text: 'About'}
+  { href: '/about', text: 'About'}
 ];
 
 const users = ["Rose", "Cake", "Biff"];
@@ -15,7 +15,7 @@ indexRouter.get('/', (req, res) => {
 });
 
 indexRouter.get('/about', (req, res) => {
-  res.sendFile(path.resolve('about.html'));
+  res.render('about', { links: links });
 });
 
 indexRouter.get('/contact', (req, res) => {
